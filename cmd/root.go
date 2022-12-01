@@ -18,6 +18,7 @@ func Execute() {
 
 	rootCmd.PersistentFlags().StringP("path", "p", "./", "directory of model")
 	rootCmd.PersistentFlags().StringSliceP("exclude", "e", nil, "exclude files and directories in scanning")
+	rootCmd.PersistentFlags().BoolP("fields", "f", false, "include structs fields in diagram")
 
 	err := rootCmd.Execute()
 	if err != nil {
@@ -28,6 +29,7 @@ func Execute() {
 func run(cmd *cobra.Command, _ []string) {
 	path, _ := cmd.PersistentFlags().GetString("path")
 	excludes, _ := cmd.PersistentFlags().GetStringSlice("exclude")
+	withFields, _ := cmd.PersistentFlags().GetBool("fields")
 
 	files, err := io.Files(path, excludes)
 	if err != nil {
@@ -39,7 +41,7 @@ func run(cmd *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	graph := diagram.CreateGraph(structs)
+	graph := diagram.CreateGraph(structs, withFields)
 
 	err = diagram.Render(graph, "out.svg")
 	if err != nil {
