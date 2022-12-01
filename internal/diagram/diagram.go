@@ -9,7 +9,7 @@ import (
 
 	"github.com/mehditeymorian/euler/internal/model"
 	"oss.terrastruct.com/d2"
-	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
+	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
 	"oss.terrastruct.com/d2/d2renderers/d2svg"
 	"oss.terrastruct.com/d2/d2renderers/textmeasure"
 	"oss.terrastruct.com/d2/d2themes/d2themescatalog"
@@ -52,7 +52,7 @@ func CreateGraph(structs []model.Struct) string {
 func Render(graph, address string) error {
 	ruler, _ := textmeasure.NewRuler()
 	diagram, err := d2.Compile(context.Background(), graph, &d2.CompileOptions{
-		Layout:  d2dagrelayout.Layout,
+		Layout:  d2elklayout.Layout,
 		Ruler:   ruler,
 		ThemeID: d2themescatalog.GrapeSoda.ID,
 	})
