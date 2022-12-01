@@ -15,7 +15,7 @@ import (
 	"oss.terrastruct.com/d2/d2themes/d2themescatalog"
 )
 
-func CreateGraph(structs []model.Struct) string {
+func CreateGraph(structs []model.Struct, withFields bool) string {
 	components := new(strings.Builder)
 	connections := new(strings.Builder)
 
@@ -29,7 +29,7 @@ func CreateGraph(structs []model.Struct) string {
 	}
 
 	for _, each := range structs {
-		component := fmt.Sprintf("%s: %s\n", each.Name, each.Name)
+		component := buildComponent(each, withFields)
 		components.WriteString(component)
 
 		for _, fieldType := range each.Fields {
@@ -63,4 +63,25 @@ func Render(graph, address string) error {
 	out, _ := d2svg.Render(diagram)
 	_ = ioutil.WriteFile(filepath.Join(address), out, 0600)
 	return nil
+}
+
+func buildComponent(model model.Struct, withFields bool) string {
+	if !withFields {
+		return fmt.Sprintf("%s: %s\n", model.Name, model.Name)
+	}
+
+	component := new(strings.Builder)
+	component.WriteString(fmt.Sprintf(`%s: {
+	shape: class
+`, model.Name))
+
+	for fieldName, fieldType := range model.Fields {
+		component.WriteString(fmt.Sprintf(`%s: "%s"
+`, fieldName, fieldType))
+	}
+
+	component.WriteString(`}
+`)
+
+	return component.String()
 }
