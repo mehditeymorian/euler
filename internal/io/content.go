@@ -77,7 +77,7 @@ func extractFields(fieldsRaw string) map[string]string {
 }
 
 func clearType(typeRaw string) string {
-	removeArray := strings.TrimPrefix(typeRaw, "[]*")
+	removeArray := strings.TrimPrefix(typeRaw, "[]")
 	removePointer := strings.TrimPrefix(removeArray, "*")
 	return removePointer
 }
