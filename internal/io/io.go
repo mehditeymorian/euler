@@ -10,13 +10,13 @@ import (
 
 var ErrDirNotExists = errors.New("directory does not exists")
 
-func Files(dir string) ([]fs.FileInfo, error) {
+func Files(dir string) ([]string, error) {
 	// check if directory exist
 	if !DirExists(dir) {
 		return nil, ErrDirNotExists
 	}
 
-	var files []fs.FileInfo
+	var files []string
 
 	walkFunc := func(path string, info fs.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
@@ -24,7 +24,7 @@ func Files(dir string) ([]fs.FileInfo, error) {
 		}
 
 		if strings.HasSuffix(path, ".go") {
-			files = append(files, info)
+			files = append(files, path)
 		}
 
 		return nil
