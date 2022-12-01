@@ -58,11 +58,26 @@ func extractFields(fieldsRaw string) map[string]string {
 
 	for _, each := range split {
 		pair := compile.Split(strings.TrimSpace(each), -1)
-		fieldName := pair[0]
-		fieldType := pair[1]
+		length := len(pair)
+		var fieldName, fieldType string
+		if length == 0 {
+			continue
+		} else if length == 1 {
+			fieldName = pair[0]
+			fieldType = pair[0]
+		} else {
+			fieldName = pair[0]
+			fieldType = clearType(pair[1])
+		}
 
 		fields[fieldName] = fieldType
 	}
 
 	return fields
+}
+
+func clearType(typeRaw string) string {
+	removeArray := strings.TrimPrefix(typeRaw, "[]*")
+	removePointer := strings.TrimPrefix(removeArray, "*")
+	return removePointer
 }
