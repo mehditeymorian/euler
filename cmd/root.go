@@ -17,6 +17,7 @@ func Execute() {
 	}
 
 	rootCmd.PersistentFlags().StringP("path", "p", "./", "directory of model")
+	rootCmd.PersistentFlags().StringSliceP("exclude", "e", nil, "exclude files and directories in scanning")
 
 	err := rootCmd.Execute()
 	if err != nil {
@@ -26,8 +27,9 @@ func Execute() {
 
 func run(cmd *cobra.Command, _ []string) {
 	path, _ := cmd.PersistentFlags().GetString("path")
+	excludes, _ := cmd.PersistentFlags().GetStringSlice("exclude")
 
-	files, err := io.Files(path)
+	files, err := io.Files(path, excludes)
 	if err != nil {
 		panic("failed to read files in the given directory")
 	}
