@@ -6,6 +6,8 @@ import (
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/mehditeymorian/euler/internal/model"
 )
 
 var ErrFailedToCompileRegex = errors.New("failed to compile regex")
@@ -14,18 +16,13 @@ const (
 	StructPattern = "type\\s(?P<Name>\\w+)\\sstruct\\s{(?P<Fields>(\\s|\\w)+)}"
 )
 
-type Struct struct {
-	Name   string
-	Fields map[string]string
-}
-
-func ExtractStructs(files []string) ([]Struct, error) {
+func ExtractStructs(files []string) ([]model.Struct, error) {
 	compile, err := regexp.Compile(StructPattern)
 	if err != nil {
 		return nil, ErrFailedToCompileRegex
 	}
 
-	var structs []Struct
+	var structs []model.Struct
 
 	for _, file := range files {
 		bytes, err := os.ReadFile(file)
@@ -38,7 +35,7 @@ func ExtractStructs(files []string) ([]Struct, error) {
 			name := string(eachStruct[1])
 			fields := string(eachStruct[2])
 
-			s := Struct{
+			s := model.Struct{
 				Name:   name,
 				Fields: extractFields(fields),
 			}
