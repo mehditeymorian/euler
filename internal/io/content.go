@@ -13,7 +13,7 @@ import (
 var ErrFailedToCompileRegex = errors.New("failed to compile regex")
 
 const (
-	StructPattern = "type\\s(?P<Name>\\w+)\\s+struct\\s+{(?P<Fields>[\\sa-zA-Z0-9*\\[\\]`\\.\\-\":]+)}"
+	StructPattern = "type\\s(?P<Name>\\w+)\\s+struct\\s+{(?P<Fields>[\\sa-zA-Z0-9*\\[\\]`\\.\\-'*\":]+)}"
 )
 
 func ExtractStructs(files []string) ([]model.Struct, error) {
