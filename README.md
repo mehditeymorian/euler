@@ -13,3 +13,23 @@ Euler
 <img src="https://img.shields.io/badge/Version-1.0.0-informational?style=for-the-badge&logo=none" alt="version" />
 </p>
 
+## Installation
+```shell
+go get github.com/mehditeymorian/euler@latest
+```
+
+## How to Use
+```shell
+euler -p ./structs-dir -e "a.go,b.go,c.go" -f
+# output: out.svg
+```
+
+## Options
+- **--path | -p (string)**: directory address of where the golang structs are
+- **--exclude | -e (string, items separated by comma)**: list of files excluded from output graph separated by comma
+- **--fields | -f (boolean)**: include each struct fields
+
+
+## Todo List
+- [ ] output path
+- [ ] output format
