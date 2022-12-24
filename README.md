@@ -8,7 +8,7 @@ Euler
 <a href="https://pkg.go.dev/github.com/mehditeymorian/euler/v1?tab=doc"target="_blank">
     <img src="https://img.shields.io/badge/Go-1.19+-00ADD8?style=for-the-badge&logo=go" alt="go version" />
 </a>&nbsp;
-<img src="https://img.shields.io/badge/license-apache_2.0-red?style=for-the-badge&logo=none" alt="license" />
+<img src="https://img.shields.io/badge/license-MIT-red?style=for-the-badge&logo=none" alt="license" />
 
 <img src="https://img.shields.io/badge/Version-1.0.0-informational?style=for-the-badge&logo=none" alt="version" />
 </p>
