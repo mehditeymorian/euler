@@ -5,7 +5,7 @@ Euler
 <p align="center">Generate dependency graph from golang struct files</p>
 
 <p align="center">
-<a href="https://pkg.go.dev/github.com/mehditeymorian/koi/v3?tab=doc"target="_blank">
+<a href="https://pkg.go.dev/github.com/mehditeymorian/euler/v1?tab=doc"target="_blank">
     <img src="https://img.shields.io/badge/Go-1.19+-00ADD8?style=for-the-badge&logo=go" alt="go version" />
 </a>&nbsp;
 <img src="https://img.shields.io/badge/license-apache_2.0-red?style=for-the-badge&logo=none" alt="license" />
@@ -25,11 +25,12 @@ euler -p ./structs-dir -e "a.go,b.go,c.go" -f
 ```
 
 ## Options
-- **--path | -p (string)**: directory address of where the golang structs are
-- **--exclude | -e (string, items separated by comma)**: list of files excluded from output graph separated by comma
-- **--fields | -f (boolean)**: include each struct fields
+- **--path | -p (string)**: Directory path of the golang models
+- **--exclude | -e (string)**: List of files excluded from output graph separated by comma
+- **--fields | -f (boolean)**: Include struct fields in the output graph
 
 
 ## Todo List
 - [ ] output path
 - [ ] output format
+- [ ] improve error handling
