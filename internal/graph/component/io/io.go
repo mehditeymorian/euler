@@ -17,6 +17,9 @@ import (
 func ScanComponents(path string, moduleName string) ([]model.Component, error) {
 	components := make(map[string]map[string]bool)
 
+	split := strings.Split(path, "/")
+	pathPrefix := split[len(split)-1]
+
 	err := filepath.WalkDir(path, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			err := fmt.Errorf("failed to scan %s: %w", path, err)
@@ -42,17 +45,23 @@ func ScanComponents(path string, moduleName string) ([]model.Component, error) {
 			return nil
 		}
 
-		packageName := node.Name.Name
+		packageName := filepath.Dir(path)
+		split := strings.Split(packageName, "/")
+		packageAbsoluteName := split[len(split)-1]
 
-		_, ok := components[packageName]
+		packageName, _ = strings.CutPrefix(packageName, pathPrefix)
+
+		key := buildKey(packageName, packageAbsoluteName)
+
+		_, ok := components[key]
 		if !ok {
-			components[packageName] = make(map[string]bool)
+			components[key] = make(map[string]bool)
 		}
 
 		for _, spec := range node.Imports {
 			importPath, _ := strconv.Unquote(spec.Path.Value)
 			internalDependency := strings.HasPrefix(importPath, moduleName)
-			components[packageName][importPath] = internalDependency
+			components[key][importPath] = internalDependency
 		}
 
 		return nil
@@ -65,6 +74,13 @@ func ScanComponents(path string, moduleName string) ([]model.Component, error) {
 	var componentsArray []model.Component
 
 	for componentName, importsMap := range components {
+		packageName, packageAbsoluteName := breakKey(componentName)
+
+		component := model.Component{
+			Name:         packageName,
+			AbsoluteName: packageAbsoluteName,
+		}
+
 		var dependencies []model.Dependency
 
 		for importName, internal := range importsMap {
@@ -79,10 +95,9 @@ func ScanComponents(path string, moduleName string) ([]model.Component, error) {
 			})
 		}
 
-		componentsArray = append(componentsArray, model.Component{
-			Name:         componentName,
-			Dependencies: dependencies,
-		})
+		component.Dependencies = dependencies
+
+		componentsArray = append(componentsArray, component)
 	}
 
 	return componentsArray, nil
@@ -105,4 +120,16 @@ func ModuleName(path string) (string, error) {
 	moduleName := modFile.Module.Mod.Path
 
 	return moduleName, nil
+}
+
+func buildKey(packageName, absoluteName string) string {
+	return packageName + ":" + absoluteName
+}
+
+func breakKey(key string) (string, string) {
+	split := strings.Split(key, ":")
+	packageName := split[0]
+	packageAbsoluteName := split[1]
+
+	return packageName, packageAbsoluteName
 }
