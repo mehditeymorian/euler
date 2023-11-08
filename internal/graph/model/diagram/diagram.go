@@ -3,11 +3,11 @@ package diagram
 import (
 	"context"
 	"fmt"
+	"github.com/mehditeymorian/euler/internal/graph/model/model"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
 
-	"github.com/mehditeymorian/euler/internal/model"
 	"oss.terrastruct.com/d2"
 	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
 	"oss.terrastruct.com/d2/d2renderers/d2svg"

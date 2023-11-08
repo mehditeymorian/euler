@@ -3,11 +3,10 @@ package io
 import (
 	"errors"
 	"fmt"
+	"github.com/mehditeymorian/euler/internal/graph/model/model"
 	"os"
 	"regexp"
 	"strings"
-
-	"github.com/mehditeymorian/euler/internal/model"
 )
 
 var ErrFailedToCompileRegex = errors.New("failed to compile regex")
