@@ -5,6 +5,7 @@ import (
 	"github.com/mehditeymorian/euler/internal/graph/component/model"
 	"go/parser"
 	"go/token"
+	"golang.org/x/exp/slices"
 	"golang.org/x/mod/modfile"
 	"io/fs"
 	"io/ioutil"
@@ -14,7 +15,7 @@ import (
 	"strings"
 )
 
-func ScanComponents(path string, moduleName string) ([]model.Component, error) {
+func ScanComponents(path string, moduleName string, options model.Option) ([]model.Component, error) {
 	components := make(map[string]map[string]bool)
 
 	split := strings.Split(path, "/")
@@ -76,6 +77,10 @@ func ScanComponents(path string, moduleName string) ([]model.Component, error) {
 	for componentName, importsMap := range components {
 		packageName, packageAbsoluteName := breakKey(componentName)
 
+		if slices.Contains(options.ExcludedComponents, componentName) {
+			continue
+		}
+
 		component := model.Component{
 			Name:         packageName,
 			AbsoluteName: packageAbsoluteName,
@@ -84,6 +89,10 @@ func ScanComponents(path string, moduleName string) ([]model.Component, error) {
 		var dependencies []model.Dependency
 
 		for importName, internal := range importsMap {
+			if slices.Contains(options.ExcludedDependencies, importName) {
+				continue
+			}
+
 			absoluteName := importName
 			if internal {
 				absoluteName = strings.TrimPrefix(absoluteName, moduleName)
