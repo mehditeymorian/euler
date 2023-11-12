@@ -14,8 +14,8 @@ import (
 	"strings"
 )
 
-func Render(components []model.Component, moduleName, fileName string) error {
-	d2Data := generateD2(components, moduleName)
+func Render(components []model.Component, moduleName, fileName string, renderExternalDependencies bool) error {
+	d2Data := generateD2(components, moduleName, renderExternalDependencies)
 
 	ruler, err := textmeasure.NewRuler()
 	if err != nil {
@@ -43,7 +43,7 @@ func Render(components []model.Component, moduleName, fileName string) error {
 	return nil
 }
 
-func generateD2(components []model.Component, moduleName string) string {
+func generateD2(components []model.Component, moduleName string, renderExternalDependencies bool) string {
 	diagram := new(strings.Builder)
 
 	write := func(format string, args ...any) {
@@ -58,6 +58,16 @@ func generateD2(components []model.Component, moduleName string) string {
 
 				dependencyName := cutPrefixes(dependency.Name, moduleName, "/")
 				dependencyName = strings.ReplaceAll(dependencyName, "/", ".")
+
+				if componentName == "" || dependencyName == "" || componentName == dependencyName {
+					continue
+				}
+
+				write("%s -> %s\n", dependencyName, componentName)
+			} else if renderExternalDependencies {
+				dependencyName := strings.ReplaceAll(dependency.Name, ".", "/")
+				componentName := cutPrefixes(component.Name, moduleName, "/")
+				componentName = strings.ReplaceAll(componentName, "/", ".")
 
 				if componentName == "" || dependencyName == "" || componentName == dependencyName {
 					continue

@@ -16,6 +16,7 @@ func Command() *cobra.Command {
 
 	cmd.PersistentFlags().StringP("path", "p", "./", "where to look for components")
 	cmd.PersistentFlags().StringP("output", "o", "out.svg", "output file name")
+	cmd.PersistentFlags().BoolP("render-external", "e", false, "rendering external dependencies too")
 	cmd.PersistentFlags().StringArrayP("exclude-dependencies", "d", nil, "exclude these dependencies from output")
 	cmd.PersistentFlags().StringArrayP("exclude-component", "c", nil, "exclude these components from output")
 
@@ -25,6 +26,7 @@ func Command() *cobra.Command {
 func run(cmd *cobra.Command, _ []string) {
 	path, _ := cmd.PersistentFlags().GetString("path")
 	outputFileName, _ := cmd.PersistentFlags().GetString("output")
+	renderExternal, _ := cmd.PersistentFlags().GetBool("render-external")
 	excludedDependencies, _ := cmd.PersistentFlags().GetStringArray("exclude-dependencies")
 	excludedComponents, _ := cmd.PersistentFlags().GetStringArray("exclude-components")
 
@@ -43,7 +45,7 @@ func run(cmd *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	err = diagram.Render(components, moduleName, outputFileName)
+	err = diagram.Render(components, moduleName, outputFileName, renderExternal)
 	if err != nil {
 		panic(err)
 	}
