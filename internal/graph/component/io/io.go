@@ -2,6 +2,7 @@ package io
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/mehditeymorian/euler/internal/graph/component/model"
 	"go/parser"
 	"go/token"
@@ -10,18 +11,20 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
-func ScanComponents(path string, moduleName string, options model.Option) ([]model.Component, error) {
+func ScanComponents(root string, moduleName string, cloned bool, options model.Option) ([]model.Component, error) {
 	components := make(map[string]map[string]bool)
 
-	split := strings.Split(path, "/")
+	split := strings.Split(root, "/")
 	pathPrefix := split[len(split)-1]
 
-	err := filepath.WalkDir(path, func(path string, d fs.DirEntry, err error) error {
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			err := fmt.Errorf("failed to scan %s: %w", path, err)
 
@@ -45,6 +48,8 @@ func ScanComponents(path string, moduleName string, options model.Option) ([]mod
 			fmt.Println("Error parsing file:", err)
 			return nil
 		}
+
+		path = strings.TrimPrefix(path, root)
 
 		packageName := filepath.Dir(path)
 		split := strings.Split(packageName, "/")
@@ -141,4 +146,47 @@ func breakKey(key string) (string, string) {
 	packageAbsoluteName := split[1]
 
 	return packageName, packageAbsoluteName
+}
+
+func IsGitRepoURL(url string) bool {
+	// Regular expression pattern to match Git repository URLs
+	pattern := `^(https?|git)://[^\s/$.?#].[^\s]*$`
+
+	match, _ := regexp.MatchString(pattern, url)
+	return match
+}
+
+func CloneRepository(url string) (string, error) {
+	uuid, err := uuid.NewUUID()
+	if err != nil {
+		fmt.Println("failed to generate uuid for temp dir:", err)
+
+		return "", err
+	}
+
+	name := "euler-repo-" + uuid.String()
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Failed to get current directory:", err)
+		return "", err
+	}
+
+	tempDir, err := os.MkdirTemp(currentDir, name)
+	if err != nil {
+		fmt.Println("Failed to create temporary directory:", err)
+		return "", err
+	}
+
+	// Clone the repository into the temporary directory
+	cmd := exec.Command("git", "clone", url, tempDir)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+	err = cmd.Run()
+	if err != nil {
+		fmt.Println("Failed to clone repository:", err)
+		return "", err
+	}
+
+	return tempDir, nil
 }

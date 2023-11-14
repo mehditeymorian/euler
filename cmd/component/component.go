@@ -1,10 +1,12 @@
 package component
 
 import (
+	"fmt"
 	"github.com/mehditeymorian/euler/internal/graph/component/diagram"
 	"github.com/mehditeymorian/euler/internal/graph/component/io"
 	"github.com/mehditeymorian/euler/internal/graph/component/model"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 func Command() *cobra.Command {
@@ -29,10 +31,26 @@ func run(cmd *cobra.Command, _ []string) {
 	renderExternal, _ := cmd.PersistentFlags().GetBool("render-external")
 	excludedDependencies, _ := cmd.PersistentFlags().GetStringArray("exclude-dependencies")
 	excludedComponents, _ := cmd.PersistentFlags().GetStringArray("exclude-components")
+	cloned := false
 
 	options := model.Option{
 		ExcludedDependencies: excludedDependencies,
 		ExcludedComponents:   excludedComponents,
+	}
+
+	if io.IsGitRepoURL(path) {
+		fmt.Println("input project is a git repo. cloning...")
+		tempPath, err := io.CloneRepository(path)
+		if err != nil {
+			panic(err)
+		}
+		path = tempPath
+
+		fmt.Println("cloned repository successfully")
+
+		defer os.RemoveAll(path) // Delete the temporary directory when done
+
+		cloned = true
 	}
 
 	moduleName, err := io.ModuleName(path)
@@ -40,7 +58,7 @@ func run(cmd *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	components, err := io.ScanComponents(path, moduleName, options)
+	components, err := io.ScanComponents(path, moduleName, cloned, options)
 	if err != nil {
 		panic(err)
 	}
@@ -49,4 +67,6 @@ func run(cmd *cobra.Command, _ []string) {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("diagram generated at %s\n", outputFileName)
 }
