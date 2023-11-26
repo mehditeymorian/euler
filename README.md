@@ -1,8 +1,7 @@
 <h1 align="center">
-<img alt="Koi logo" src="asset/euler.jpeg" width="500px"/><br/>
 Euler
 </h1>
-<p align="center">Generate dependency graph from golang struct files</p>
+<p align="center">Generate dependency graph from golang structs and components</p>
 
 <p align="center">
 <a href="https://pkg.go.dev/github.com/mehditeymorian/euler/v1?tab=doc"target="_blank">
@@ -10,27 +9,29 @@ Euler
 </a>&nbsp;
 <img src="https://img.shields.io/badge/license-MIT-red?style=for-the-badge&logo=none" alt="license" />
 
-<img src="https://img.shields.io/badge/Version-1.0.0-informational?style=for-the-badge&logo=none" alt="version" />
+<img src="https://img.shields.io/badge/Version-1.1.0-informational?style=for-the-badge&logo=none" alt="version" />
 </p>
 
 ## Installation
 ```shell
-go get github.com/mehditeymorian/euler@latest
+go install github.com/mehditeymorian/euler@latest
 ```
 
 ## How to Use
+
+### Generate for Components
+Generate graph for component
 ```shell
-euler -p ./structs-dir -e "a.go,b.go,c.go" -f
-# output: out.svg
+euler component -p GIT_REPO|LOCAL_DIR
 ```
 
-## Options
-- **--path | -p (string)**: Directory path of the golang models
-- **--exclude | -e (string)**: List of files excluded from output graph separated by comma
-- **--fields | -f (boolean)**: Include struct fields in the output graph
+For example the following is dependency graph is for [Docker Compose](https://github.com/docker/compose) project.
+
+![Docker Compose Project Dependency Graph](assets/compose-repo.svg)
 
 
-## Todo List
-- [ ] output path
-- [ ] output format
-- [ ] improve error handling
+### Generate for Struct Models
+```shell
+euler struct -p ./structs-dir -e "a.go,b.go,c.go" -f
+# output: out.svg
+```
