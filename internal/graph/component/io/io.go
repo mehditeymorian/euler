@@ -179,7 +179,7 @@ func CloneRepository(url string) (string, error) {
 	}
 
 	// Clone the repository into the temporary directory
-	cmd := exec.Command("git", "clone", url, tempDir)
+	cmd := exec.Command("git", "clone", "--depth=1", url, tempDir)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stdout
 	err = cmd.Run()
