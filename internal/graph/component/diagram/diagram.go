@@ -55,9 +55,11 @@ func generateD2(components []model.Component, moduleName string, renderExternalD
 			if dependency.Internal {
 				componentName := cutPrefixes(component.Name, moduleName, "/")
 				componentName = strings.ReplaceAll(componentName, "/", ".")
+				componentName = strings.ReplaceAll(componentName, "label", "label_")
 
 				dependencyName := cutPrefixes(dependency.Name, moduleName, "/")
 				dependencyName = strings.ReplaceAll(dependencyName, "/", ".")
+				dependencyName = strings.ReplaceAll(dependencyName, "label", "label_")
 
 				if componentName == "" || dependencyName == "" || componentName == dependencyName {
 					continue
