@@ -8,8 +8,8 @@ import (
 
 func Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "model",
-		Short: "model graph generator",
+		Use:   "struct",
+		Short: "struct graph generator",
 		Long:  "generate graph for struct models",
 		Run:   run,
 	}
