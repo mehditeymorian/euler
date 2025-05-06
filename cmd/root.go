@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/mehditeymorian/euler/cmd/component"
+	"github.com/mehditeymorian/euler/cmd/export"
 	"github.com/mehditeymorian/euler/cmd/model"
 	"os"
 
@@ -18,6 +19,7 @@ func Execute() {
 	rootCmd.AddCommand(
 		model.Command(),
 		component.Command(),
+		export.Command(),
 	)
 
 	err := rootCmd.Execute()
