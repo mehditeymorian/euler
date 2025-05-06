@@ -3,17 +3,17 @@ package export
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/martian/log"
 	"github.com/mehditeymorian/euler/internal/graph/component/io"
 	"github.com/mehditeymorian/euler/internal/graph/component/model"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
 )
 
 func Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "component",
-		Short: "generate graph for components",
+		Use:   "export",
+		Short: "export components",
 		Run:   run,
 	}
 
@@ -64,13 +64,13 @@ func run(cmd *cobra.Command, _ []string) {
 
 	marshal, err := json.Marshal(components)
 	if err != nil {
-		log.Errorf("failed to marshal components: %v", err)
+		log.Printf("failed to marshal components: %v", err)
 	}
 
 	// write to file
 	err = os.WriteFile("components.json", marshal, 0644)
 	if err != nil {
-		log.Errorf("failed to write components to file: %v", err)
+		log.Printf("failed to write components to file: %v", err)
 
 	}
 }
