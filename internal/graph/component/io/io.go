@@ -31,7 +31,7 @@ func ScanComponents(root string, moduleName string, cloned bool, options model.O
 			return err
 		}
 
-		if d.IsDir() || !strings.HasSuffix(d.Name(), ".go") {
+		if d.IsDir() || !strings.HasSuffix(d.Name(), ".go") || strings.Contains(path, "vendor") {
 			return nil
 		}
 
