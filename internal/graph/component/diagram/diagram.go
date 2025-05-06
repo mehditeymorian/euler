@@ -61,6 +61,10 @@ func generateD2(components []model.Component, moduleName string, renderExternalD
 				dependencyName = strings.ReplaceAll(dependencyName, "/", ".")
 				dependencyName = strings.ReplaceAll(dependencyName, "label", "label_")
 
+				if componentName == "." {
+					componentName = "root"
+				}
+
 				if componentName == "" || dependencyName == "" || componentName == dependencyName {
 					continue
 				}
@@ -73,6 +77,10 @@ func generateD2(components []model.Component, moduleName string, renderExternalD
 
 				if componentName == "" || dependencyName == "" || componentName == dependencyName {
 					continue
+				}
+
+				if componentName == "." {
+					componentName = "root"
 				}
 
 				write("%s -> %s\n", dependencyName, componentName)
