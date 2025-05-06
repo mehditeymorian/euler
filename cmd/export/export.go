@@ -28,6 +28,7 @@ func Command() *cobra.Command {
 
 func run(cmd *cobra.Command, _ []string) {
 	path, _ := cmd.PersistentFlags().GetString("path")
+	renderExternal, _ := cmd.PersistentFlags().GetBool("render-external")
 	excludedDependencies, _ := cmd.PersistentFlags().GetStringArray("exclude-dependencies")
 	excludedComponents, _ := cmd.PersistentFlags().GetStringArray("exclude-components")
 	cloned := false
@@ -60,6 +61,26 @@ func run(cmd *cobra.Command, _ []string) {
 	components, err := io.ScanComponents(path, moduleName, cloned, options)
 	if err != nil {
 		panic(err)
+	}
+
+	if !renderExternal {
+		filtered := make([]model.Component, len(components))
+		for i, component := range components {
+			dependencies := make([]model.Dependency, 0)
+			for _, dependency := range component.Dependencies {
+				if dependency.Internal {
+					dependencies = append(dependencies, dependency)
+				}
+			}
+
+			filtered[i] = model.Component{
+				Name:         component.Name,
+				AbsoluteName: component.AbsoluteName,
+				Dependencies: dependencies,
+			}
+		}
+
+		components = filtered
 	}
 
 	marshal, err := json.Marshal(components)
